@@ -26,6 +26,8 @@ fn issue(context: &CliContext, args: CertIssueArgs) -> Result<()> {
     fs::create_dir_all(context.layout.certs_issued_dir())?;
     let cert = context.layout.cert_path();
     let key = context.layout.key_path();
+    let apps = context.layout.read_apps()?;
+    let domains = cert_core::effective_domains(&root.cert.domains, &apps);
     match cert_core::files_status(&cert, &key) {
         cert_core::CertFilesStatus::Present if !args.force => {
             println!("certificate already exists, skipped {}", cert.display());
@@ -36,13 +38,16 @@ fn issue(context: &CliContext, args: CertIssueArgs) -> Result<()> {
         }
         _ => {}
     }
-    cert_core::issue_command(cert, key, &root.cert.domains).run()
+    cert_core::issue_command(cert, key, &domains).run()
 }
 
 fn status(context: &CliContext) -> Result<()> {
     let root = RootManifest::read_from(&context.layout.root_manifest_path())?;
+    let apps = context.layout.read_apps()?;
+    let domains = cert_core::effective_domains(&root.cert.domains, &apps);
     println!("provider: {}", root.cert.provider);
-    println!("domains: {}", root.cert.domains.join(", "));
+    println!("configured domains: {}", root.cert.domains.join(", "));
+    println!("effective domains: {}", domains.join(", "));
     println!(
         "mkcert: {}",
         if cert_core::ensure_mkcert_available().is_ok() {

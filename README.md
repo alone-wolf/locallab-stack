@@ -85,7 +85,6 @@ cert:
   provider: mkcert
   domains:
     - locallab
-    - "*.locallab"
 hosts:
   enabled: true
   ip: 127.0.0.1
@@ -130,6 +129,8 @@ llstk cert status
 ```
 
 Private keys are written under `.locallab/certs/issued/` and must not be committed.
+
+`llstk cert issue` signs the root configured names such as `locallab` or `*.locallab`, plus the explicit domains from created app manifests such as `gitea.locallab`. Some browsers can reject second-level wildcard names like `*.locallab`, so explicit app domains are included as well.
 
 ## Implemented Commands
 

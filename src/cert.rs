@@ -1,8 +1,11 @@
+use std::collections::BTreeSet;
 use std::ffi::OsString;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 
 use anyhow::{Context, Result, bail};
+
+use crate::manifest::AppManifest;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct CertCommandSpec {
@@ -91,6 +94,16 @@ pub fn issue_command(cert: PathBuf, key: PathBuf, domains: &[String]) -> CertCom
     CertCommandSpec::mkcert_issue(&cert, &key, domains)
 }
 
+pub fn effective_domains(configured_domains: &[String], apps: &[AppManifest]) -> Vec<String> {
+    configured_domains
+        .iter()
+        .cloned()
+        .chain(apps.iter().map(|app| app.domain.clone()))
+        .collect::<BTreeSet<_>>()
+        .into_iter()
+        .collect()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -100,9 +113,18 @@ mod tests {
         let spec = CertCommandSpec::mkcert_issue(
             Path::new("/tmp/a cert.pem"),
             Path::new("/tmp/a key.pem"),
-            &["locallab".to_string(), "*.locallab".to_string()],
+            &["locallab".to_string(), "gitea.locallab".to_string()],
         );
         assert_eq!(spec.program, OsString::from("mkcert"));
         assert!(spec.args.contains(&OsString::from("/tmp/a cert.pem")));
+    }
+
+    #[test]
+    fn effective_domains_include_app_domains() {
+        let apps = vec![AppManifest::default_for("gitea", None).unwrap()];
+        let domains = effective_domains(&["locallab".to_string(), "*.locallab".to_string()], &apps);
+        assert!(domains.contains(&"locallab".to_string()));
+        assert!(domains.contains(&"*.locallab".to_string()));
+        assert!(domains.contains(&"gitea.locallab".to_string()));
     }
 }

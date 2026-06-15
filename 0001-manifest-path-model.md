@@ -39,7 +39,6 @@ cert:
   provider: mkcert
   domains:
     - locallab
-    - "*.locallab"
 hosts:
   enabled: true
   ip: 127.0.0.1

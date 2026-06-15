@@ -250,7 +250,7 @@ llstk cert status
 
 ```text
 locallab
-*.locallab
+<app_name>.locallab
 ```
 
 CLI 应支持两种模式：
@@ -312,7 +312,6 @@ cert:
   provider: mkcert
   domains:
     - locallab
-    - "*.locallab"
 
 hosts:
   enabled: true

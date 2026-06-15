@@ -131,10 +131,12 @@ fn issue_cert_if_needed(context: &CliContext, root: &RootManifest) -> Result<()>
         }
         cert::CertFilesStatus::Missing => {
             println!("issuing certificate");
+            let apps = context.layout.read_apps()?;
+            let domains = cert::effective_domains(&root.cert.domains, &apps);
             cert::issue_command(
                 context.layout.cert_path(),
                 context.layout.key_path(),
-                &root.cert.domains,
+                &domains,
             )
             .run()
         }

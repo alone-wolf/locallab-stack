@@ -59,7 +59,7 @@ cert:
 mkcert -install
 mkcert -cert-file .locallab/certs/issued/locallab.pem \
        -key-file .locallab/certs/issued/locallab-key.pem \
-       locallab "*.locallab"
+       locallab gitea.locallab
 ```
 
 实际实现必须处理路径中包含空格的情况，不能拼接 shell 字符串执行。
@@ -86,7 +86,7 @@ mkcert -cert-file .locallab/certs/issued/locallab.pem \
 
 ```text
 provider: mkcert
-domains: locallab, *.locallab
+domains: locallab, gitea.locallab
 mkcert: available
 certificate: present .locallab/certs/issued/locallab.pem
 private key: present .locallab/certs/issued/locallab-key.pem

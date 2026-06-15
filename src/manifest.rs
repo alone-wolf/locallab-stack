@@ -98,7 +98,7 @@ impl RootManifest {
             },
             cert: CertConfig {
                 provider: "mkcert".to_string(),
-                domains: vec!["locallab".to_string(), "*.locallab".to_string()],
+                domains: vec!["locallab".to_string()],
             },
             hosts: HostsConfig {
                 enabled: true,
