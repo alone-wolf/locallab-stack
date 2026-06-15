@@ -121,7 +121,7 @@ fn import_compose(args: AppImportComposeArgs) -> Result<()> {
     let yaml: serde_yaml::Value = serde_yaml::from_str(&text)
         .with_context(|| format!("failed to parse {}", args.path.display()))?;
     println!("source compose: {}", args.path.display());
-    println!("target app: .locallab/app.{}", args.name);
+    println!("target app: .locallab/lab-app-{}", args.name);
     if let Some(services) = yaml.get("services").and_then(|value| value.as_mapping()) {
         println!("services:");
         for key in services.keys().filter_map(|key| key.as_str()) {

@@ -26,7 +26,7 @@ llstk app migrate-gitea [--source <path>] [--dry-run]
 ## Gitea 目标结构
 
 ```text
-.locallab/app.gitea/
+.locallab/lab-app-gitea/
   docker-compose.yml
   .env
   llstk.yml
@@ -48,8 +48,8 @@ llstk app migrate-gitea [--source <path>] [--dry-run]
 
 迁移目标应满足：
 
-- Gitea 数据位于 `.locallab/app.gitea/data/gitea`。
-- Postgres 数据位于 `.locallab/app.gitea/data/postgres`。
+- Gitea 数据位于 `.locallab/lab-app-gitea/data/gitea`。
+- Postgres 数据位于 `.locallab/lab-app-gitea/data/postgres`。
 - 移除主机端口 `3000:3000`。
 - 保留 SSH 端口 `2222:22`。
 - `gitea` 同时接入全局网络和私有网络。
@@ -79,11 +79,11 @@ llstk app migrate-gitea [--source <path>] [--dry-run]
 
 ```text
 source compose: docker-compose.yml
-target app: .locallab/app.gitea
+target app: .locallab/lab-app-gitea
 
 manual data moves:
-  mv ./gitea .locallab/app.gitea/data/gitea
-  mv ./postgres .locallab/app.gitea/data/postgres
+  mv ./gitea .locallab/lab-app-gitea/data/gitea
+  mv ./postgres .locallab/lab-app-gitea/data/postgres
 
 verify:
   llstk gateway render

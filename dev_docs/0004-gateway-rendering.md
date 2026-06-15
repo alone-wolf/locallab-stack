@@ -8,7 +8,7 @@
 
 - 阶段 0000 到 0003 已完成。
 - `.locallab/llstk.yml` 可以读取。
-- `.locallab/app.<name>/llstk.yml` 可以扫描、读取和校验。
+- `.locallab/lab-app-<name>/llstk.yml` 可以扫描、读取和校验。
 - `gitea-postgres` 模板能生成公开 upstream。
 
 ## 命令规格
@@ -28,7 +28,7 @@ llstk gateway status
 渲染必须读取：
 
 - 根清单 `.locallab/llstk.yml`。
-- 所有匹配 `.locallab/app.*/llstk.yml` 的应用清单。
+- 所有匹配 `.locallab/lab-app-*/llstk.yml` 的应用清单。
 
 应用扫描顺序必须稳定，建议按应用名升序排序。
 

@@ -72,7 +72,7 @@ impl WorkspaceLayout {
     }
 
     pub fn app_dir(&self, name: &str) -> PathBuf {
-        self.root_dir.join(format!("app.{name}"))
+        self.root_dir.join(format!("lab-app-{name}"))
     }
 
     pub fn app_manifest_path(&self, name: &str) -> PathBuf {
@@ -99,7 +99,7 @@ impl WorkspaceLayout {
             let Some(file_name) = file_name.to_str() else {
                 continue;
             };
-            let Some(app_name) = file_name.strip_prefix("app.") else {
+            let Some(app_name) = file_name.strip_prefix("lab-app-") else {
                 continue;
             };
             let manifest = entry.path().join("llstk.yml");
@@ -130,6 +130,9 @@ mod tests {
             layout.root_manifest_path(),
             PathBuf::from(".custom/llstk.yml")
         );
-        assert_eq!(layout.app_dir("gitea"), PathBuf::from(".custom/app.gitea"));
+        assert_eq!(
+            layout.app_dir("gitea"),
+            PathBuf::from(".custom/lab-app-gitea")
+        );
     }
 }

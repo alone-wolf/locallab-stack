@@ -21,7 +21,7 @@ llstk
 核心思路很简单：
 
 - 架构级基础设施放在 `./.locallab` 中。
-- 每个应用放在 `./.locallab/app.<app_name>` 中。
+- 每个应用放在 `./.locallab/lab-app-<app_name>` 中。
 - 每个应用拥有自己的数据、配置、docker compose 文件，以及可选的私有网络。
 - 共享网关通过 HTTPS 暴露应用域名。
 - 共享的全局 Docker 网络连接网关和公开应用服务。
@@ -82,7 +82,7 @@ LocalLabStack 应该保持小型、可检查，并且以本地优先。
 
   templates/
 
-  app.gitea/
+  lab-app-gitea/
     docker-compose.yml
     .env
     llstk.yml
@@ -91,7 +91,7 @@ LocalLabStack 应该保持小型、可检查，并且以本地优先。
       postgres/
     config/
 
-  app.example/
+  lab-app-example/
     docker-compose.yml
     .env
     llstk.yml
@@ -109,8 +109,8 @@ Project name:        LocalLabStack
 CLI command:         llstk
 Root directory:      ./.locallab
 Root manifest:       ./.locallab/llstk.yml
-App directory:       ./.locallab/app.<app_name>
-App manifest:        ./.locallab/app.<app_name>/llstk.yml
+App directory:       ./.locallab/lab-app-<app_name>
+App manifest:        ./.locallab/lab-app-<app_name>/llstk.yml
 Global network:      locallabstack-global
 Private network:     llstk-<app_name>-private
 Gateway container:   locallabstack-gateway
@@ -320,7 +320,7 @@ hosts:
 
 ### 应用清单
 
-`.locallab/app.gitea/llstk.yml`
+`.locallab/lab-app-gitea/llstk.yml`
 
 ```yaml
 version: 1
@@ -537,7 +537,7 @@ llstk hosts plan
 `llstk app create gitea --template gitea-postgres` 创建：
 
 ```text
-.locallab/app.gitea/
+.locallab/lab-app-gitea/
   docker-compose.yml
   .env
   llstk.yml
@@ -569,7 +569,7 @@ llstk hosts plan
 目标迁移：
 
 ```text
-.locallab/app.gitea/
+.locallab/lab-app-gitea/
   docker-compose.yml
   .env
   llstk.yml
@@ -580,8 +580,8 @@ llstk hosts plan
 
 变更：
 
-- 将 Gitea 应用数据移动到 `app.gitea/data/gitea` 下。
-- 将 Postgres 数据移动到 `app.gitea/data/postgres` 下。
+- 将 Gitea 应用数据移动到 `lab-app-gitea/data/gitea` 下。
+- 将 Postgres 数据移动到 `lab-app-gitea/data/postgres` 下。
 - 移除主机端口 `3000:3000`；由网关处理 HTTPS。
 - 保留 SSH 端口 `2222:22`。
 - 将 `gitea` 同时接入全局网络和私有网络。
@@ -591,7 +591,7 @@ llstk hosts plan
 
 ## 17. 开放问题
 
-- 应用目录应该直接放在 `.locallab/` 下，还是放在 `.locallab/apps/` 下？
+- 应用目录已决定直接放在 `.locallab/` 下，并使用 `lab-app-<app_name>` 命名。
 - `container_name` 是否应强制要求，还是应优先使用网络别名？
 - 生成文件应标记后整体覆盖，还是使用受保护区域进行就地编辑？
 - `llstk app up` 应直接调用 Docker Compose，还是第一阶段只打印命令？

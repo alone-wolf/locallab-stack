@@ -54,20 +54,20 @@ docker compose
 
 ```text
 gateway compose    .locallab/
-app compose        .locallab/app.<name>/
+app compose        .locallab/lab-app-<name>/
 ```
 
 `llstk app up gitea` 应等价于：
 
 ```bash
-cd .locallab/app.gitea
+cd .locallab/lab-app-gitea
 docker compose up -d
 ```
 
 `llstk app down gitea` 应等价于：
 
 ```bash
-cd .locallab/app.gitea
+cd .locallab/lab-app-gitea
 docker compose down
 ```
 

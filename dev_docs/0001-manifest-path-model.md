@@ -15,7 +15,7 @@
 - 根工作区默认目录为当前目录下的 `.locallab`。
 - 第一版允许通过全局参数 `--root <path>` 覆盖工作区目录；如果阶段 0000 没有实现该参数，本阶段应补上。
 - `--root` 的相对路径基于当前工作目录解析。
-- 应用目录直接位于 `.locallab/app.<app_name>`，暂不使用 `.locallab/apps/`。
+- 应用目录直接位于 `.locallab/lab-app-<app_name>`，暂不使用 `.locallab/apps/`。
 - `llstk.yml` 是事实来源；生成文件可以从清单重新生成。
 - YAML 字段使用 snake_case。
 - 清单版本字段 `version` 必须存在，第一版只接受 `1`。
@@ -86,9 +86,9 @@ gateway_dir               .locallab/gateway
 gateway_caddyfile_path    .locallab/gateway/Caddyfile
 certs_dir                 .locallab/certs
 templates_dir             .locallab/templates
-app_dir(name)             .locallab/app.<name>
-app_manifest_path(name)   .locallab/app.<name>/llstk.yml
-app_compose_path(name)    .locallab/app.<name>/docker-compose.yml
+app_dir(name)             .locallab/lab-app-<name>
+app_manifest_path(name)   .locallab/lab-app-<name>/llstk.yml
+app_compose_path(name)    .locallab/lab-app-<name>/docker-compose.yml
 ```
 
 ## 校验规则

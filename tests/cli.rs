@@ -94,7 +94,7 @@ fn app_create_gateway_and_hosts_plan_form_mvp_loop() {
         .assert()
         .success();
 
-    let compose = fs::read_to_string(root.join("app.gitea/docker-compose.yml")).unwrap();
+    let compose = fs::read_to_string(root.join("lab-app-gitea/docker-compose.yml")).unwrap();
     assert!(!compose.contains("3000:3000"));
     assert!(compose.contains("2222:22"));
 

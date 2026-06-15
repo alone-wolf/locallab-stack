@@ -56,7 +56,7 @@ This creates:
   certs/
     ca/
     issued/
-  app.gitea/
+  lab-app-gitea/
     docker-compose.yml
     .env
     llstk.yml
@@ -105,7 +105,7 @@ upstreams:
 
 ## Gateway And Hosts
 
-`llstk gateway render` scans `.locallab/app.*/llstk.yml` and writes `.locallab/gateway/Caddyfile`.
+`llstk gateway render` scans `.locallab/lab-app-*/llstk.yml` and writes `.locallab/gateway/Caddyfile`.
 
 `llstk hosts plan` prints planned hosts records without writing `/etc/hosts`.
 
@@ -222,4 +222,4 @@ llstk cert status
 - If `llstk doctor` reports Docker errors, check `docker compose version`.
 - If hosts sync fails, rerun with a writable `--hosts-file` for testing or use appropriate permissions for `/etc/hosts`.
 - If Caddy cannot find certificates, run `llstk cert issue` or inspect `.locallab/certs/issued/`.
-- If an app already exists, inspect `.locallab/app.<name>/` before using `--force`.
+- If an app already exists, inspect `.locallab/lab-app-<name>/` before using `--force`.

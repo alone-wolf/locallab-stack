@@ -125,7 +125,7 @@ mod tests {
 
     #[test]
     fn builds_logs_command() {
-        let command = logs(Path::new(".locallab/app.gitea"), true, Some(50));
+        let command = logs(Path::new(".locallab/lab-app-gitea"), true, Some(50));
         assert_eq!(
             command.args,
             vec!["logs", "--follow", "--tail", "50"]
