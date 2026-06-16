@@ -101,6 +101,13 @@ upstreams:
     container: gitea
     port: 3000
     public: true
+endpoints:
+  - label: web page
+    uri: https://gitea.locallab
+    type: web
+  - label: ssh access
+    uri: git@gitea.locallab:2222
+    type: ssh
 ```
 
 ## Gateway And Hosts

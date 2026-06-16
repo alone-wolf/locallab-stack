@@ -69,6 +69,12 @@ fn show(context: &CliContext, args: AppNameArgs) -> Result<()> {
             name, upstream.container, upstream.port, upstream.public
         );
     }
+    if !app.endpoints.is_empty() {
+        println!("endpoints:");
+        for endpoint in app.endpoints {
+            println!("  {}\t{}\t{}", endpoint.label, endpoint.kind, endpoint.uri);
+        }
+    }
     Ok(())
 }
 

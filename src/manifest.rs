@@ -1,4 +1,5 @@
 use std::collections::BTreeMap;
+use std::fmt;
 use std::fs;
 use std::path::Path;
 
@@ -53,6 +54,8 @@ pub struct AppManifest {
     pub services: BTreeMap<String, Service>,
     #[serde(default)]
     pub data: Vec<String>,
+    #[serde(default)]
+    pub endpoints: Vec<Endpoint>,
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
@@ -79,6 +82,26 @@ pub struct Service {
 pub enum ServiceNetwork {
     Global,
     Private,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct Endpoint {
+    pub label: String,
+    pub uri: String,
+    #[serde(rename = "type")]
+    pub kind: EndpointType,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum EndpointType {
+    Web,
+    Http,
+    Ssh,
+    Tcp,
+    Admin,
+    Api,
+    Other,
 }
 
 impl RootManifest {
@@ -169,11 +192,16 @@ impl AppManifest {
         let manifest = Self {
             version: 1,
             name: name.to_string(),
-            domain,
+            domain: domain.clone(),
             upstreams,
             ports: BTreeMap::new(),
             services,
             data: vec!["./data".to_string()],
+            endpoints: vec![Endpoint {
+                label: "web page".to_string(),
+                uri: format!("https://{domain}"),
+                kind: EndpointType::Web,
+            }],
         };
         manifest.validate()?;
         Ok(manifest)
@@ -221,6 +249,9 @@ impl AppManifest {
                 }
             }
         }
+        for endpoint in &self.endpoints {
+            endpoint.validate()?;
+        }
         Ok(())
     }
 
@@ -229,6 +260,33 @@ impl AppManifest {
             .iter()
             .filter(|(_, upstream)| upstream.public)
             .collect()
+    }
+}
+
+impl Endpoint {
+    pub fn validate(&self) -> Result<()> {
+        if self.label.trim().is_empty() {
+            bail!("endpoint label cannot be empty");
+        }
+        if self.uri.trim().is_empty() {
+            bail!("endpoint uri cannot be empty");
+        }
+        Ok(())
+    }
+}
+
+impl fmt::Display for EndpointType {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let value = match self {
+            EndpointType::Web => "web",
+            EndpointType::Http => "http",
+            EndpointType::Ssh => "ssh",
+            EndpointType::Tcp => "tcp",
+            EndpointType::Admin => "admin",
+            EndpointType::Api => "api",
+            EndpointType::Other => "other",
+        };
+        formatter.write_str(value)
     }
 }
 
@@ -298,6 +356,35 @@ mod tests {
     fn public_upstream_requires_global_network() {
         let mut manifest = AppManifest::default_for("demo", None).unwrap();
         manifest.services.get_mut("demo").unwrap().networks.clear();
+        assert!(manifest.validate().is_err());
+    }
+
+    #[test]
+    fn app_manifest_without_endpoints_defaults_to_empty() {
+        let text = r#"
+version: 1
+name: demo
+domain: demo.locallab
+upstreams:
+  web:
+    container: demo
+    port: 80
+    public: true
+services:
+  demo:
+    public: true
+    networks:
+      - global
+"#;
+        let manifest: AppManifest = serde_yaml::from_str(text).unwrap();
+        assert!(manifest.endpoints.is_empty());
+        assert!(manifest.validate().is_ok());
+    }
+
+    #[test]
+    fn endpoint_requires_label_and_uri() {
+        let mut manifest = AppManifest::default_for("demo", None).unwrap();
+        manifest.endpoints[0].label.clear();
         assert!(manifest.validate().is_err());
     }
 }

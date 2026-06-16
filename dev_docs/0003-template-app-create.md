@@ -134,6 +134,8 @@ llstk app create demo --template basic-http
 
 - `name: gitea`。
 - `domain: gitea.locallab`。
+- endpoints 包含 `https://gitea.locallab` 的 web 入口。
+- endpoints 包含 `git@gitea.locallab:2222` 的 ssh 入口。
 - 公开 upstream 指向 `gitea:3000`。
 - SSH 端口映射 `2222:22`。
 - `gitea` 服务同时在 `global` 和 `private` 网络。
@@ -158,6 +160,7 @@ Compose 文件必须表达：
 - 一个公开 web upstream。
 - 默认域名 `<app_name>.locallab`。
 - 一个公开服务加入全局网络。
+- endpoints 包含默认 web 入口。
 
 Compose 文件可以使用稳定的小型 HTTP 镜像，例如 `nginx:alpine` 或 `caddy:2-alpine`。如果选择镜像，应在模板 README 中说明用途。
 
@@ -223,6 +226,7 @@ gitea  gitea.locallab
 - 未初始化工作区时 `app create` 失败。
 - 初始化后创建 `gitea` 成功。
 - 创建后的应用清单可以被 `AppManifest` 读回并通过校验。
+- Gitea 应用清单包含 web 和 ssh endpoints。
 - Gitea compose 不包含 `3000:3000`。
 - Gitea compose 包含 `2222:22`。
 - 应用目录已存在时不带 `--force` 会失败。

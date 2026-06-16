@@ -141,6 +141,17 @@ fn stack_status_reports_apps_and_routes() {
         .success();
     llstk()
         .current_dir(temp.path())
+        .args(["--root", root.to_str().unwrap(), "app", "show", "gitea"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("endpoints:"))
+        .stdout(predicate::str::contains("web page"))
+        .stdout(predicate::str::contains("https://gitea.locallab"))
+        .stdout(predicate::str::contains("ssh access"))
+        .stdout(predicate::str::contains("git@gitea.locallab:2222"));
+
+    llstk()
+        .current_dir(temp.path())
         .args(["--root", root.to_str().unwrap(), "stack", "status"])
         .assert()
         .success()

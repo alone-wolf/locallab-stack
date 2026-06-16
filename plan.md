@@ -333,6 +333,19 @@ upstreams:
     port: 3000
     public: true
 
+endpoints:
+  - label: web page
+    uri: https://gitea.locallab
+    type: web
+
+  - label: ssh access
+    uri: git@gitea.locallab:2222
+    type: ssh
+
+  - label: one http demo
+    uri: https://gitea.locallab/some-api
+    type: http
+
 ports:
   ssh:
     host: 2222
@@ -359,6 +372,7 @@ data:
 
 - 域名。
 - 网关 upstream。
+- 入口 endpoints。
 - 公开/私有服务。
 - 主机端口。
 - 数据目录。

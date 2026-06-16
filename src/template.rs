@@ -4,7 +4,9 @@ use std::path::Path;
 
 use anyhow::{Context, Result, bail};
 
-use crate::manifest::{AppManifest, PortMapping, Service, ServiceNetwork, Upstream};
+use crate::manifest::{
+    AppManifest, Endpoint, EndpointType, PortMapping, Service, ServiceNetwork, Upstream,
+};
 
 #[derive(Clone, Debug)]
 pub struct BuiltinTemplate {
@@ -181,6 +183,18 @@ fn render_gitea_postgres(context: &TemplateContext) -> Result<RenderedTemplate> 
         ports,
         services,
         data: vec!["./data/gitea".to_string(), "./data/postgres".to_string()],
+        endpoints: vec![
+            Endpoint {
+                label: "web page".to_string(),
+                uri: format!("https://{}", context.domain),
+                kind: EndpointType::Web,
+            },
+            Endpoint {
+                label: "ssh access".to_string(),
+                uri: format!("git@{}:2222", context.domain),
+                kind: EndpointType::Ssh,
+            },
+        ],
     };
     manifest.validate()?;
     Ok(RenderedTemplate {
@@ -313,5 +327,19 @@ mod tests {
         assert!(!rendered.compose.contains("3000:3000"));
         assert!(rendered.compose.contains("2222:22"));
         assert!(rendered.manifest.validate().is_ok());
+        assert!(
+            rendered
+                .manifest
+                .endpoints
+                .iter()
+                .any(|endpoint| endpoint.uri == "https://gitea.locallab")
+        );
+        assert!(
+            rendered
+                .manifest
+                .endpoints
+                .iter()
+                .any(|endpoint| endpoint.uri == "git@gitea.locallab:2222")
+        );
     }
 }
